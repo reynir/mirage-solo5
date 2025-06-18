@@ -51,7 +51,7 @@ let sleep_metrics =
   let doc = "Sleep queue size" in
   let data () =
     let q_size = SleepQueue.length sleep_queue in
-    Data.v [ uint "sleep queue size" q_size ]
+    Data.v [ uint Metrics_key.sleep_queue_size q_size ]
   in
   Src.v ~doc ~tags:Metrics.Tags.[] ~data "sleep"
 

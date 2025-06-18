@@ -53,13 +53,6 @@ module Memory : sig
   (** [metrics ~quick ~tags] is a metrics source calling {quick_stat} (unless
       [quick] is set to [false]) or {stat}. By default, this metrics source is
       registered with [Metrics_lwt.periodically] (with [quick] set to [true]. *)
-
-  module Metrics_key : sig
-    val heap_words : string
-    val live_words : string
-    val stack_words : string
-    val free_words : string
-  end
 end
 
 module Solo5 : sig
@@ -68,4 +61,11 @@ module Solo5 : sig
     | SOLO5_R_AGAIN
     | SOLO5_R_EINVAL
     | SOLO5_R_EUNSPEC  (** A type mapping the C enum solo5_result_t to OCaml **)
+end
+
+module Metrics_key : sig
+  val heap_words : string
+  val live_words : string
+  val stack_words : string
+  val free_words : string
 end
