@@ -47,6 +47,13 @@ let quick_stat () =
   let s = get_stack_words () in
   { heap_words = h; live_words = l; stack_words = s; free_words = h - l - s }
 
+module Metrics_key = struct
+  let heap_words = "memory heap words"
+  let live_words = "memory live words"
+  let stack_words = "memory stack words"
+  let free_words = "memory free words"
+end
+
 let metrics ?(quick = true) ~tags () =
   let open Metrics in
   let doc = "Memory counters" in
@@ -55,10 +62,10 @@ let metrics ?(quick = true) ~tags () =
     let stat = stat () in
     Data.v
       [
-        uint "memory heap words" stat.heap_words;
-        uint "memory live words" stat.live_words;
-        uint "memory stack words" stat.stack_words;
-        uint "memory free words" stat.free_words;
+        uint Metrics_key.heap_words stat.heap_words;
+        uint Metrics_key.live_words stat.live_words;
+        uint Metrics_key.stack_words stat.stack_words;
+        uint Metrics_key.free_words stat.free_words;
       ]
   in
   Src.v ~doc ~tags ~data "memory"
