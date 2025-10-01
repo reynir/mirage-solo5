@@ -111,7 +111,7 @@ mirage_trim_allocation(value v_unit)
  * Caller: Main, @@noalloc
  */
 CAMLprim value
-mirage_flo64(value v_int64)
+mirage_clzll(value v_int64)
 {
     return Val_int(__builtin_clzll(Int64_val(v_int64)));
 }

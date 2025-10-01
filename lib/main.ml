@@ -22,7 +22,7 @@
  *)
 
 external solo5_yield : Time.t -> int64 = "mirage_solo5_yield_2"
-external flo64 : int64 -> int = "mirage_flo64"
+external clzll : int64 -> int = "mirage_clzll"
 [@@noalloc]
 
 let work = Array.init 64 (fun _ -> Lwt_condition.create ())
@@ -31,7 +31,7 @@ let work = Array.init 64 (fun _ -> Lwt_condition.create ())
  * created lazily the first time [h] is waited on. *)
 let wait_for_work_on_handle h =
   (* We assume [h] is a valid handle (has exactly one bit set) *)
-  let i = 64 - flo64 h in
+  let i = 64 - clzll h in
   Lwt_condition.wait work.(i)
 
 (* Execute one iteration and register a callback function *)
