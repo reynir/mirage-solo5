@@ -22,21 +22,17 @@
  *)
 
 external solo5_yield : Time.t -> int64 = "mirage_solo5_yield_2"
+external flo64 : int64 -> int = "mirage_flo64"
+[@@noalloc]
 
-(* A Map from Int64 (solo5_handle_t) to an Lwt_condition. *)
-module HandleMap = Map.Make (Int64)
-
-let work = ref HandleMap.empty
+let work = Array.init 64 (fun _ -> Lwt_condition.create ())
 
 (* Wait for work on handle [h]. The Lwt_condition and HandleMap binding are
  * created lazily the first time [h] is waited on. *)
 let wait_for_work_on_handle h =
-  match HandleMap.find h !work with
-  | exception Not_found ->
-      let cond = Lwt_condition.create () in
-      work := HandleMap.add h cond !work;
-      Lwt_condition.wait cond
-  | cond -> Lwt_condition.wait cond
+  (* We assume [h] is a valid handle (has exactly one bit set) *)
+  let i = flo64 h - 1 in
+  Lwt_condition.wait work.(i)
 
 (* Execute one iteration and register a callback function *)
 let run t =
@@ -59,12 +55,12 @@ let run t =
         (if not (Int64.equal 0L ready_set) then
            (* Some I/O is possible, wake up threads and continue. *)
            let is_in_set set x =
-             not Int64.(equal 0L (logand set (shift_left 1L (to_int x))))
+             not Int64.(equal 0L (logand set (shift_left 1L x)))
            in
-           HandleMap.iter
+           Array.iteri
              (fun k v ->
                if is_in_set ready_set k then Lwt_condition.broadcast v ())
-             !work);
+             work);
         (* Call leave hooks. *)
         Mirage_runtime.run_leave_iter_hooks ();
         aux ()
