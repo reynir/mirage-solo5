@@ -31,7 +31,7 @@ let work = Array.init 64 (fun _ -> Lwt_condition.create ())
  * created lazily the first time [h] is waited on. *)
 let wait_for_work_on_handle h =
   (* We assume [h] is a valid handle (has exactly one bit set) *)
-  let i = flo64 h - 1 in
+  let i = 64 - flo64 h in
   Lwt_condition.wait work.(i)
 
 (* Execute one iteration and register a callback function *)

@@ -16,8 +16,6 @@
 
 #include "solo5.h"
 
-#include <stdbit.h>
-
 #define CAML_NAME_SPACE
 #include <caml/mlvalues.h>
 #include <caml/memory.h>
@@ -115,7 +113,7 @@ mirage_trim_allocation(value v_unit)
 CAMLprim value
 mirage_flo64(value v_int64)
 {
-    return Val_int(stdc_first_leading_one_ull(Int64_val(v_int64)));
+    return Val_int(__builtin_clzll(Int64_val(v_int64)));
 }
 
 extern void _nolibc_init(uintptr_t, size_t);
