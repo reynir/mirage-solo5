@@ -22,8 +22,7 @@
  *)
 
 external solo5_yield : Time.t -> int64 = "mirage_solo5_yield_2"
-external clzll : int64 -> int = "mirage_clzll"
-[@@noalloc]
+external clzll : int64 -> int = "mirage_clzll" [@@noalloc]
 
 let work = Array.init 64 (fun _ -> Lwt_condition.create ())
 
